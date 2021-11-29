@@ -30,6 +30,7 @@ function operate(operator, number1, number2) {
 
 const displayOperationNode = document.querySelector("#operation");
 const displayResultNode = document.querySelector("#result");
+const decimalPointBtn = document.querySelector("#decimal-point");
 
 let previousNumber = ""
   , currentNumber = ""
@@ -55,7 +56,11 @@ function displayResult(result) {
 function displayOperator(event) {
     if (event.target.nodeName !== "BUTTON") return;
     if (isNumber(event.target.textContent)) return;
-    if (event.target.textContent === "C" || event.target.textContent === "=") return;
+    if (event.target.textContent === "C"
+      || event.target.textContent === "="
+      || event.target.textContent === ".") return;
+      
+    decimalPointBtn.disabled = false;
 
     if (!previousNumber) {
         previousNumber = currentNumber;
@@ -69,28 +74,28 @@ function displayOperator(event) {
         previousNumber = result;
         displayResult(result);
     }
-
-    // let result = !previousNumber ? currentNumber
-    //             : operate(currentOperator, +previousNumber, +currentNumber);
     
-    // previousNumber = result;
-    // displayResult(result);
-
     currentNumber = "";
+    
     currentOperator = event.target.textContent.trim();
     displayOperationNode.textContent += event.target.textContent;
 }
 
 function evaluateOperation() {
+    decimalPointBtn.disabled = false;
+    
     if (currentNumber === "") {
         displayResult("ERROR");
         return;
     }
-    const result = operate(currentOperator, +previousNumber, +currentNumber);
+    
+    let result = operate(currentOperator, +previousNumber, +currentNumber);
+    result = Math.round((result + Number.EPSILON) * 100) / 100;
     displayResult(result);
 }
 
 function clearDisplay() {
+    decimalPointBtn.disabled = false;
     previousNumber = "";
     currentNumber = "";
     currentOperator = "";
@@ -109,3 +114,9 @@ document.querySelector("#equal-button")
 
 document.querySelector("#clear-button")
   .addEventListener("click", clearDisplay);
+
+decimalPointBtn.addEventListener("click", () => {
+    currentNumber += ".";
+    displayOperationNode.textContent += ".";
+    decimalPointBtn.disabled = true;
+});
