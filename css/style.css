@@ -37,6 +37,7 @@ body {
     flex: 1;
     background-color: white;
     border-radius: inherit;
+    font-size: 24px;
 
     /* flex properties */
     display: flex;
@@ -68,6 +69,7 @@ body {
 
 #calculator-buttons button {
     background-color: red;
-    font-weight: bold;
     border-radius: 4px;
+    font-weight: bold;
+    font-size: 22px;
 }
