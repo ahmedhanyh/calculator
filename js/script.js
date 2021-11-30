@@ -81,15 +81,25 @@ function displayOperator(event) {
     displayOperationNode.textContent += event.target.textContent;
 }
 
+function displayDecimalPoint() {
+    currentNumber += ".";
+    displayOperationNode.textContent += ".";
+    decimalPointBtn.disabled = true;
+}
+
 function evaluateOperation() {
     decimalPointBtn.disabled = false;
+    
+    let result = operate(currentOperator, +previousNumber, +currentNumber);
     
     if (currentNumber === "") {
         displayResult("ERROR");
         return;
+    } else if (result === Infinity) {
+        displayResult("ERROR: DIVISION BY ZERO");
+        return;
     }
-    
-    let result = operate(currentOperator, +previousNumber, +currentNumber);
+
     result = Math.round((result + Number.EPSILON) * 100) / 100;
     displayResult(result);
 }
@@ -115,8 +125,4 @@ document.querySelector("#equal-button")
 document.querySelector("#clear-button")
   .addEventListener("click", clearDisplay);
 
-decimalPointBtn.addEventListener("click", () => {
-    currentNumber += ".";
-    displayOperationNode.textContent += ".";
-    decimalPointBtn.disabled = true;
-});
+decimalPointBtn.addEventListener("click", displayDecimalPoint);
