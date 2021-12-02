@@ -58,7 +58,8 @@ function displayOperator(event) {
     if (isNumber(event.target.textContent)) return;
     if (event.target.textContent === "C"
       || event.target.textContent === "="
-      || event.target.textContent === ".") return;
+      || event.target.textContent === "."
+      || event.target.textContent === "DEL") return;
       
     decimalPointBtn.disabled = false;
 
@@ -113,6 +114,11 @@ function clearDisplay() {
     displayResultNode.textContent = "";
 }
 
+function backspace() {
+    const currentDisplayValue = displayOperationNode.textContent;
+    displayOperationNode.textContent = currentDisplayValue.slice(0, -1);
+}
+
 document.querySelector("#calculator-buttons")
   .addEventListener("click", displayNumber);
 
@@ -124,5 +130,8 @@ document.querySelector("#equal-button")
 
 document.querySelector("#clear-button")
   .addEventListener("click", clearDisplay);
+
+document.querySelector("#delete-button")
+  .addEventListener("click", backspace);
 
 decimalPointBtn.addEventListener("click", displayDecimalPoint);
