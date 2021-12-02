@@ -64,6 +64,24 @@ body {
 
     /* flex properties */
     display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#clear-delete {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+}
+
+#clear-delete button {
+    flex: 1;
+    background-color: #ff4747;
+}
+
+#numbers-operators {
+    flex: 6;
+    display: flex;
     gap: 4px;
 }
 
@@ -103,10 +121,7 @@ button:hover {
     opacity: 0.8;
 }
 
-#clear-button {
-    background-color: #ff4747;
-}
-
 #equal-button {
     background-color: #00bd00;
+    grid-column: 1 / 3;
 }
