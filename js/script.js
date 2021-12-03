@@ -41,12 +41,24 @@ function isNumber(str) {
     return String(strToNumber) === str;
 }
 
+function isOperator(str) {
+    return str === "+" || str === "-" || str === "x" || str === "/";
+}
+
 function displayNumber(event) {
-    if (event.target.nodeName !== "BUTTON") return;
-    if (!isNumber(event.target.textContent)) return;
+    let valueToBeAdded;
+
+    if (event.type === "keydown") {
+        if (!isNumber(event.key)) return;
+        valueToBeAdded = event.key;
+    } else {
+        if (event.target.nodeName !== "BUTTON") return;
+        if (!isNumber(event.target.textContent)) return;
+        valueToBeAdded = event.target.textContent;
+    }
     
-    currentNumber += event.target.textContent;
-    displayOperationNode.textContent += event.target.textContent;
+    currentNumber += valueToBeAdded;
+    displayOperationNode.textContent += valueToBeAdded;
 }
 
 function displayResult(result) {
@@ -54,32 +66,35 @@ function displayResult(result) {
 }
 
 function displayOperator(event) {
-    if (event.target.nodeName !== "BUTTON") return;
-    if (isNumber(event.target.textContent)) return;
-    if (event.target.textContent === "C"
-      || event.target.textContent === "="
-      || event.target.textContent === "."
-      || event.target.textContent === "DEL") return;
-      
+    let chosenOperator;
+    
+    if (event.type === "keydown") {
+        if (!isOperator(event.key)) return;
+        chosenOperator = " " + event.key + " ";
+    } else {
+        if (event.target.nodeName !== "BUTTON") return;
+        if (!isOperator(event.target.textContent.trim())) return;
+        chosenOperator = event.target.textContent;
+    }
+    
     decimalPointBtn.disabled = false;
-
+    
     if (!previousNumber) {
         previousNumber = currentNumber;
     } else {
-        let result = operate(currentOperator, +previousNumber, +currentNumber);
-        if (result === Infinity) {
+        if (currentNumber == 0) {
             displayResult("ERROR: DIVISION BY ZERO");
             return;
         }
+        let result = operate(currentOperator, +previousNumber, +currentNumber);
         result = Math.round((result + Number.EPSILON) * 100) / 100;
         previousNumber = result;
         displayResult(result);
     }
     
     currentNumber = "";
-    
-    currentOperator = event.target.textContent.trim();
-    displayOperationNode.textContent += event.target.textContent;
+    currentOperator = chosenOperator.trim();
+    displayOperationNode.textContent += chosenOperator;
 }
 
 function displayDecimalPoint() {
@@ -91,16 +106,15 @@ function displayDecimalPoint() {
 function evaluateOperation() {
     decimalPointBtn.disabled = false;
     
-    let result = operate(currentOperator, +previousNumber, +currentNumber);
-    
     if (currentNumber === "") {
         displayResult("ERROR");
         return;
-    } else if (result === Infinity) {
+    } else if (currentNumber == 0) {
         displayResult("ERROR: DIVISION BY ZERO");
         return;
     }
 
+    let result = operate(currentOperator, +previousNumber, +currentNumber);
     result = Math.round((result + Number.EPSILON) * 100) / 100;
     displayResult(result);
 }
@@ -135,3 +149,22 @@ document.querySelector("#delete-button")
   .addEventListener("click", backspace);
 
 decimalPointBtn.addEventListener("click", displayDecimalPoint);
+
+window.addEventListener("keydown", displayNumber);
+window.addEventListener("keydown", displayOperator);
+
+window.addEventListener("keydown", event => {
+    if (event.key === ".") displayDecimalPoint();
+});
+
+window.addEventListener("keydown", event => {
+    if (event.key === "Enter") evaluateOperation();
+});
+
+window.addEventListener("keydown", event => {
+    if (event.key === "Escape") clearDisplay();
+});
+
+window.addEventListener("keydown", event => {
+    if (event.key === "Backspace") backspace();
+});
