@@ -133,6 +133,16 @@ function backspace() {
     displayOperationNode.textContent = currentDisplayValue.slice(0, -1);
 }
 
+document.querySelectorAll("button")
+  .forEach(button => button.addEventListener("click", () => {
+      button.classList.add("clicked");
+  }))
+
+document.querySelectorAll("button")
+  .forEach(button => button.addEventListener("animationend", () => {
+      button.classList.remove("clicked");
+  }))
+
 document.querySelector("#calculator-buttons")
   .addEventListener("click", displayNumber);
 
