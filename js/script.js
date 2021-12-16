@@ -129,8 +129,9 @@ function clearDisplay() {
 }
 
 function backspace() {
-    const currentDisplayValue = displayOperationNode.textContent;
-    displayOperationNode.textContent = currentDisplayValue.slice(0, -1);
+    if (currentNumber === "") return;
+    currentNumber = currentNumber.slice(0, -1);
+    displayOperationNode.textContent = displayOperationNode.textContent.slice(0, -1);
 }
 
 document.querySelectorAll("button")
